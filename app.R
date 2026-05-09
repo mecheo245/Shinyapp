@@ -24,30 +24,36 @@ ui <- fluidPage(
   
   titlePanel("Distribution of Smoking Behaviors in the U.S."),
   
+  h3("Research Question"),
+  p("What is the distribution of smoking behaviors across the U.S. population?"),
+  
+  h3("App Overview"),
+  p("This app provides an interactive visualization of smoking behavior prevalence 
+across U.S. states using data from the Behavioral Risk Factor Surveillance 
+System (BRFSS). Users can explore the distribution of different smoking 
+categories through histograms and summary statistics."),
+  
+  h4("Author"),
+  p("Joel Adam Thuo"),
+  
+  h4("Data Source"),
+  p("Behavioral Risk Factor Surveillance System (BRFSS), Centers for Disease 
+Control and Prevention (CDC)."),
+  
+  h4("Methods"),
   p("The app provides a clear visualization of the distribution of smoking 
     behaviors across U.S. states, supported by summary statistics such as 
     measures of central tendency. While the analysis focuses primarily on 
-    descriptive insights, it effectively allows users to explore variability in 
-    smoking prevalence. More advanced statistical methods could further enhance 
-    the depth of analysis in future publications or research."),
+    descriptive insights, it effectively allows users to explore variability 
+    in smoking prevalence. More advanced statistical methods could further 
+    enhance the depth of analysis in future publications or research."),
   
-  p("Author: Joel Adam Thuo"),
+  h4("AI Disclosure"),
+  p("This app was developed with assistance from ChatGPT for coding support and 
+debugging."),
   
-  p("Data source: Behavioral Risk Factor Surveillance System (BRFSS), Centers 
-    for Disease Control and Prevention (CDC)."),
-  
-  p("Methods: The app uses descriptive statistics and histograms to visualize 
-    the distribution of smoking behaviors across U.S. states. Users can 
-    interactively select variables and adjust bin sizes to explore variability 
-    in the data."),
-  
-  p("AI Disclosure: This app was developed with assistance from ChatGPT for 
-    coding support and debugging."),
-  
-  br(),
-
   tags$p(
-    "GitHub Repository: ",
+    strong("GitHub Repository: "),
     tags$a(
       href = "https://github.com/mecheo245/Shinyapp",
       "View Source Code",
@@ -57,8 +63,6 @@ ui <- fluidPage(
   
   br(),
   
-  p("Data source: Behavioral Risk Factor Surveillance System (BRFSS), CDC."),
-  br(),  
   
   sidebarLayout(
     sidebarPanel(
