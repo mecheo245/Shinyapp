@@ -1,0 +1,186 @@
+---
+title: "VTPEH 6270 Final Report"
+author: "Joel Adam Thuo"
+date: "2026-05-09"
+output:
+  pdf_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1 Introduction, Research Question, and Public Health Context
+
+## 1.1 Introduction
+
+**Tobacco use remains one of the leading preventable causes of disease and death in the United States. Smoking is associated with increased risk of cardiovascular disease, cancer, respiratory illness, and reduced quality of life. Understanding the distribution of smoking behaviors across the U.S. population can help identify patterns of tobacco use and support public health prevention efforts.**
+
+**This analysis uses data from the Behavioral Risk Factor Surveillance System (BRFSS), published by the Centers for Disease Control and Prevention (CDC). The dataset contains state-level estimates of smoking behaviors across the United States from 1995–2010.**
+
+## 1.2 Research Question
+
+**What is the distribution of smoking behaviors across the U.S. population?**
+
+Variables examined include:
+
+- Daily smokers (%)
+- Some-day smokers (%)
+- Former smokers (%)
+- Never smoked (%)
+
+## 1.3 Public Health Context
+
+**Monitoring smoking prevalence is essential for public health surveillance and tobacco control policy. Smoking contributes substantially to preventable morbidity and mortality in the United States, making state-level surveillance data important for identifying patterns and informing interventions. The BRFSS dataset allows researchers to explore variability in smoking behaviors across states and over time.**
+
+# 2 Materials and Methods
+
+## 2.1 Loading Libraries and Data
+
+```{r results='hide'}
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+```
+
+```{r}
+setwd("/Users/joeladamthuo/Desktop/R/Final Report")
+mydata <- read.csv("smoking_data.csv")
+head(mydata)
+names(mydata)
+```
+
+## 2.2 Data Cleaning
+
+**The smoking prevalence variables were originally stored as character variables with percentage signs. The next step is to clean the data and convert to numeric variables.**
+
+```{r}
+mydata$Smoke.everyday  <- as.numeric(gsub("%", "", mydata$Smoke.everyday))
+mydata$Smoke.some.days <- as.numeric(gsub("%", "", mydata$Smoke.some.days))
+mydata$Former.smoker   <- as.numeric(gsub("%", "", mydata$Former.smoker))
+mydata$Never.smoked    <- as.numeric(gsub("%", "", mydata$Never.smoked))
+```
+
+## 2.3 Descriptive Statistics
+
+**The table below summarizes the distribution of smoking prevalence variables across U.S. states.**
+
+```{r}
+summary_tbl <- data.frame(
+  Variable = c(
+    "Daily Smokers (%)",
+    "Some-day Smokers (%)",
+    "Former Smokers (%)",
+    "Never Smoked (%)"
+  ),
+  Mean = c(
+    round(mean(mydata$Smoke.everyday, na.rm = TRUE), 2),
+    round(mean(mydata$Smoke.some.days, na.rm = TRUE), 2),
+    round(mean(mydata$Former.smoker, na.rm = TRUE), 2),
+    round(mean(mydata$Never.smoked, na.rm = TRUE), 2)
+  ),
+  Median = c(
+    round(median(mydata$Smoke.everyday, na.rm = TRUE), 2),
+    round(median(mydata$Smoke.some.days, na.rm = TRUE), 2),
+    round(median(mydata$Former.smoker, na.rm = TRUE), 2),
+    round(median(mydata$Never.smoked, na.rm = TRUE), 2)
+  ),
+  SD = c(
+    round(sd(mydata$Smoke.everyday, na.rm = TRUE), 2),
+    round(sd(mydata$Smoke.some.days, na.rm = TRUE), 2),
+    round(sd(mydata$Former.smoker, na.rm = TRUE), 2),
+    round(sd(mydata$Never.smoked, na.rm = TRUE), 2)
+  ),
+  Min = c(
+    round(min(mydata$Smoke.everyday, na.rm = TRUE), 2),
+    round(min(mydata$Smoke.some.days, na.rm = TRUE), 2),
+    round(min(mydata$Former.smoker, na.rm = TRUE), 2),
+    round(min(mydata$Never.smoked, na.rm = TRUE), 2)
+  ),
+  Max = c(
+    round(max(mydata$Smoke.everyday, na.rm = TRUE), 2),
+    round(max(mydata$Smoke.some.days, na.rm = TRUE), 2),
+    round(max(mydata$Former.smoker, na.rm = TRUE), 2),
+    round(max(mydata$Never.smoked, na.rm = TRUE), 2)
+  )
+)
+
+knitr::kable(
+  summary_tbl,
+  caption = "Table 1. Descriptive statistics for smoking prevalence variables.",
+  align = "c",
+  digits = 2
+) %>%
+  kable_styling(
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+**The descriptive statistics reveal notable differences across smoking behavior categories.**
+
+**Daily smokers averaged 16.56% across states (SD = 3.98), with values ranging from 3.6% to 29.1%, indicating substantial variability between states. Some-day smokers had the lowest mean prevalence at 4.84% (SD = 1.16). Former smokers averaged 24.32% (SD = 3.50), while the largest category was individuals who never smoked, with a mean of 54.26% (SD = 5.60), suggesting that the majority of the U.S. population has never smoked.**
+
+# 3 Results
+
+## 3.1 Distribution of Daily Smoking Prevalence
+
+```{r}
+ggplot(mydata, aes(x = Smoke.everyday)) +
+  geom_histogram(bins = 30, fill = "blue", color = "white", alpha = 0.8) +
+  geom_vline(aes(xintercept = mean(Smoke.everyday, na.rm = TRUE)),
+             color = "red", linewidth = 1, linetype = "dashed") +
+  labs(title = "Distribution of Daily Smoking Prevalence",
+       x = "Daily Smokers (%)", y = "Frequency") +
+  theme_minimal()
+```
+
+**The histogram shows that daily smoking prevalence across U.S. states follows an approximately normal distribution, with most states reporting between 14% and 20% daily smokers. The red dashed line indicates the mean of approximately 16.56%. The slight left skew suggests a small number of states with notably low daily smoking rates pulling the distribution downward.**
+
+## 3.2 Distribution of Former Smokers
+
+```{r}
+ggplot(mydata, aes(x = Former.smoker)) +
+  geom_histogram(bins = 30, fill = "darkgreen", color = "white", alpha = 0.8) +
+  geom_vline(aes(xintercept = mean(Former.smoker, na.rm = TRUE)),
+             color = "red", linewidth = 1, linetype = "dashed") +
+  labs(title = "Distribution of Former Smokers",
+       x = "Former Smokers (%)", y = "Frequency") +
+  theme_minimal()
+```
+
+**The distribution of former smokers is also approximately normal and more tightly concentrated than that of daily smokers, with most states falling between 22% and 28%. The mean of approximately 24.32%, marked by the red dashed line, sits near the peak of the distribution. The relatively narrow spread (SD = 3.50) suggests greater consistency in former smoker prevalence across states compared to daily smoking rates.**
+
+## 3.3 Association Between Daily Smokers and Former Smokers
+
+```{r}
+
+ggplot(mydata, aes(x = Smoke.everyday, y = Former.smoker)) +
+  
+  geom_point(color = "blue", alpha = 0.7) +
+  
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  
+  labs(
+    title = "Association Between Daily Smokers and Former Smokers",
+    x = "Daily Smokers (%)",
+    y = "Former Smokers (%)"
+  ) +
+  
+  theme_minimal()
+```
+
+**The scatterplot indicates a weak positive association between daily smokers and former smokers across U.S. states. States with higher daily smoking prevalence generally tend to have somewhat higher proportions of former smokers. However, the large spread of points suggests substantial variability and indicates that additional factors likely influence smoking behavior and cessation.**
+```
+
+# 4 Conclusion
+
+**This analysis explored the distribution of smoking behaviors across the U.S. population using BRFSS data from the CDC. Histograms and descriptive statistics demonstrated variability in smoking prevalence across states for daily smokers, some-day smokers, former smokers, and individuals who never smoked.**
+
+**These findings demonstrate that smoking prevalence varies considerably across U.S. states, emphasizing the need for continued tobacco prevention and cessation programs. Future analyses could explore demographic, socioeconomic, and policy-related factors associated with smoking behaviors.**
+
+# AI Use Disclosure Statement
+
+**This project was developed with assistance from ChatGPT for coding support, debugging, and report structuring.**
